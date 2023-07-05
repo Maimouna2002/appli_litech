@@ -1,0 +1,1 @@
+// Fichier contenant des fonctions d'aide ou utilitaires.
