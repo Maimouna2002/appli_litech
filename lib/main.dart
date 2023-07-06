@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:stageapp/routes.dart';
-import 'package:stageapp/utils/const.dart';
+import 'package:stageapp/root_app.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Your App',
+      theme: ThemeData(fontFamily: 'WorkSans'),
       debugShowCheckedModeBanner: false,
-      theme: Constants.lightTheme(context),
-      initialRoute: '/offers',
-      routes: routes,
+      home: RootApp(),
     );
   }
 }
