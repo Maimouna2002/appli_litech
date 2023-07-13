@@ -39,6 +39,9 @@ dependencies:
   google_fonts: ^4.0.4
   percent_indicator: ^4.2.3
   build_runner: ^2.1.5
+  carousel_slider: ^4.2.1
+  url_launcher: ^6.1.12
+  flutter_secure_storage: ^8.0.0
 
 
 dev_dependencies:

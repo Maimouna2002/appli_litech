@@ -1,31 +1,88 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../constants.dart';
 import '../models/offer_model.dart';
 
 class OfferService {
   Future<List<Offer>> fetchOffers() async {
-    try {
-      final response = await http
-          .get(Uri.parse(ApiConstants.baseUrl + ApiConstants.offersEndpoint));
+    final response =
+        await http.get(Uri.parse('http://127.0.0.1:8000/api/offers'));
 
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = json.decode(response.body);
-        return responseData.map((json) => Offer.fromJson(json)).toList();
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData is List) {
+        List<Offer> offers = [];
+        for (var item in jsonData) {
+          offers.add(Offer.fromJson(item));
+        }
+        return offers;
       } else {
-        _log(
-            'Échec de la récupération des offres. Code d\'état : ${response.statusCode}');
-        throw Exception('Échec de la récupération des offres');
+        throw Exception('Invalid response data format');
       }
-    } catch (e) {
-      _log(
-          'Une erreur s\'est produite lors de la récupération des offres : $e');
-      throw Exception('Échec de la récupération des offres');
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      throw Exception('Request error: ${response.statusCode}');
+    } else if (response.statusCode >= 500) {
+      throw Exception('Server error: ${response.statusCode}');
+    } else {
+      throw Exception('Failed to fetch offers: ${response.statusCode}');
     }
   }
 
-  void _log(String message) {
-    print('[${DateTime.now().toIso8601String()}] $message');
+  Future<List<Domain>> fetchDomains() async {
+    final response =
+        await http.get(Uri.parse('http://127.0.0.1:8000/api/offers'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData is List) {
+        // Vérification que les données sont bien au format attendu
+        List<Domain> domains = [];
+        for (var item in jsonData) {
+          if (item['domain'] != null) {
+            final domainData = item['domain'];
+            domains.add(Domain.fromJson(domainData));
+          }
+        }
+        return domains;
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      // Erreur de requête
+      throw Exception('Request error: ${response.statusCode}');
+    } else if (response.statusCode >= 500) {
+      // Erreur serveur
+      throw Exception('Server error: ${response.statusCode}');
+    } else {
+      // Autres erreurs
+      throw Exception('Failed to fetch domains: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Offer>> fetchDomainOffers(String domain) async {
+    final response = await http
+        .get(Uri.parse('http://127.0.0.1:8000/api/offers?domain=$domain'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData is List) {
+        List<Offer> domainOffers = [];
+        for (var item in jsonData) {
+          domainOffers.add(Offer.fromJson(item));
+        }
+        return domainOffers;
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      throw Exception('Request error: ${response.statusCode}');
+    } else if (response.statusCode >= 500) {
+      throw Exception('Server error: ${response.statusCode}');
+    } else {
+      throw Exception('Failed to fetch domain offers: ${response.statusCode}');
+    }
   }
 }

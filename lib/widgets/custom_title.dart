@@ -26,7 +26,7 @@ class CustomTitle extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: secondary,
+            color: AppColors.secondary,
             fontSize: fontSize,
             fontWeight: FontWeight.w700,
           ),
@@ -41,9 +41,9 @@ class CustomTitle extends StatelessWidget {
                   // );
                 },
                 child: Text(
-                  'voir plus',
+                  'Voir Plus',
                   style: TextStyle(
-                      color: primary,
+                      color: AppColors.primary,
                       fontSize: 15.0,
                       fontWeight: FontWeight.w400),
                 ),

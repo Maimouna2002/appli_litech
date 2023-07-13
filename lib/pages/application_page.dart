@@ -3,23 +3,18 @@ import 'package:flutter/services.dart';
 
 import '../theme/colors.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+class ApplicationPage extends StatefulWidget {
+  const ApplicationPage({super.key});
 
   @override
-  _AccountPageState createState() => _AccountPageState();
+  State<ApplicationPage> createState() => _ApplicationPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _ApplicationPageState extends State<ApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: AppColors.background,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0.0,

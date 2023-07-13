@@ -1,0 +1,22 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../models/domain_model.dart';
+
+class DomainService {
+  Future<List<Domain>> fetchDomains() async {
+    final response =
+        await http.get(Uri.parse('http://127.0.0.1:8000/api/domains'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      List<Domain> domains = [];
+      for (var item in jsonData) {
+        domains.add(Domain.fromJson(item));
+      }
+      return domains;
+    } else {
+      throw Exception('Failed to fetch domains');
+    }
+  }
+}

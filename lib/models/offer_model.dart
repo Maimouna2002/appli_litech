@@ -2,6 +2,7 @@ class Offer {
   final int id;
   final int typeOfferId;
   final int domainId;
+  final String title;
   final String description;
   final DateTime dateStart;
   final DateTime dateEnd;
@@ -16,6 +17,7 @@ class Offer {
     required this.id,
     required this.typeOfferId,
     required this.domainId,
+    required this.title,
     required this.description,
     required this.dateStart,
     required this.dateEnd,
@@ -35,6 +37,7 @@ class Offer {
       id: json['id'],
       typeOfferId: json['type_offer_id'],
       domainId: json['domain_id'],
+      title: json['title'],
       description: json['description'],
       dateStart: DateTime.parse(json['date_start']),
       dateEnd: DateTime.parse(json['date_end']),

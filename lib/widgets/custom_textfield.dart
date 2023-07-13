@@ -2,88 +2,41 @@ import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/padding.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextField extends StatelessWidget {
   const CustomTextField({
     Key? key,
-    required this.prefixIcon,
+    required this.controller,
     required this.labelText,
-    this.controller,
-    this.readOnlyField = false,
-    this.isPassword = false,
-    this.iconSize = 24.0,
-    this.maxLine = 1,
-    this.height = 50.0,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.obscureText = false,
     this.keyboardType,
-    this.iconColor,
+    this.maxLines = 1,
+    this.enabled = true,
   }) : super(key: key);
 
-  final IconData prefixIcon;
-  final double iconSize;
+  final TextEditingController controller;
   final String labelText;
-  final TextEditingController? controller;
-  final bool isPassword;
-  final bool readOnlyField;
-  final int maxLine;
-  final double height;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final bool obscureText;
   final TextInputType? keyboardType;
-  final Color? iconColor;
+  final int maxLines;
+  final bool enabled;
 
-  @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: secondary.withOpacity(0.25), width: 0.5),
-        ),
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+        suffixIcon: suffixIcon != null ? Icon(suffixIcon) : null,
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 50.0,
-            width: 50.0,
-            alignment: Alignment.center,
-            child: Icon(
-              widget.prefixIcon,
-              size: widget.iconSize,
-              color: widget.iconColor,
-            ),
-          ),
-          SizedBox(width: miniSpacer),
-          Flexible(
-            child: TextField(
-              onTap: () {},
-              keyboardType: widget.keyboardType,
-              readOnly: widget.readOnlyField,
-              obscureText: widget.isPassword,
-              controller: widget.controller,
-              maxLines: widget.maxLine,
-              style: TextStyle(
-                fontSize: 15.0,
-                color: secondary,
-                fontWeight: FontWeight.w500,
-              ),
-              cursorColor: secondary,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                labelText: widget.labelText,
-                labelStyle: TextStyle(
-                  color: secondary.withOpacity(0.5),
-                  fontSize: 15.0,
-                  height: 1,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      enabled: enabled,
     );
   }
 }

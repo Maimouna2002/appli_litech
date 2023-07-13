@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../theme/colors.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     Key? key,
     required this.title,
-    this.showBackButton = true,
-    this.showFilterButton = false,
-    this.backgroundColor = background,
+    this.backgroundColor = AppColors.background,
   }) : super(key: key);
 
   final String title;
-  final bool showBackButton;
-  final bool showFilterButton;
   final Color backgroundColor;
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -23,44 +22,26 @@ class CustomAppBar extends StatelessWidget {
       elevation: 0.0,
       automaticallyImplyLeading: false,
       excludeHeaderSemantics: true,
-      flexibleSpace: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            children: [
-              if (showBackButton)
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: primary,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: secondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+      title: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.jpeg', // Chemin de l'image du logo
+              width: 50.0,
+              height: 50.0,
+              // ajustez la largeur et la hauteur selon vos besoins
+            ),
+            SizedBox(width: 8.0),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondary,
               ),
-              if (showFilterButton)
-                IconButton(
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: primary,
-                  ),
-                  onPressed: () {
-                    // TODO: Implement filter logic
-                  },
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
