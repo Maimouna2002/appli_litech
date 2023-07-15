@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stageapp/widgets/custom_offer_card.dart';
+import '../models/auth_model.dart';
 import '../models/offer_model.dart';
 import '../services/offer_service.dart';
-import '../widgets/custom_app_bar.dart';
-import '../widgets/custom_offer_card.dart';
 import 'apply_page.dart';
 import 'offer_details_page.dart';
 
@@ -72,11 +72,14 @@ class _DomainOffersPageState extends State<DomainOffersPage> {
     );
   }
 
-  void navigateToApplyPage(Offer offer) {
+  void navigateToApplyPage(Offer offer, User user) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ApplyPage(offer: offer),
+        builder: (context) => ApplyPage(
+          offer: offer,
+          user: user,
+        ),
       ),
     );
   }

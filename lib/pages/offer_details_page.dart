@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/offer_model.dart';
+import '../widgets/custom_app_bar.dart';
 
 class OfferDetailsPage extends StatelessWidget {
   final Offer offer;
@@ -9,8 +10,9 @@ class OfferDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Détails de l\'offre'),
+      appBar: CustomAppBar(
+        title: 'Détails de l\'offre',
+        showBackButton: true,
       ),
       body: SingleChildScrollView(
         // padding: EdgeInsets.all(16.0),

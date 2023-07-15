@@ -3,6 +3,7 @@ import 'package:stageapp/models/offer_model.dart';
 import 'package:stageapp/pages/apply_page.dart';
 import 'package:stageapp/pages/domain_offers_page.dart';
 import 'package:stageapp/pages/offer_details_page.dart';
+import 'package:stageapp/services/auth_service';
 import 'package:stageapp/services/offer_service.dart';
 import 'package:stageapp/theme/colors.dart';
 import 'package:stageapp/theme/padding.dart';
@@ -13,8 +14,9 @@ import 'package:stageapp/widgets/custom_offer_card.dart';
 import 'package:stageapp/widgets/custom_search_field.dart';
 import 'package:stageapp/widgets/custom_title.dart';
 
+import '../models/auth_model.dart';
 import '../widgets/custom_domain_card.dart';
-import 'login_page.dart';
+import 'login_page';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _domainsFuture = OfferService().fetchDomains();
-    _offersFuture = OfferService().fetchOffers();
+    _offersFuture = OfferService().fetchRecentOffers();
   }
 
   @override
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Portail Academique de l\'université de Ngaoundere',
+        showBackButton: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -90,7 +93,6 @@ class _HomePageState extends State<HomePage> {
               child: CustomTitle(title: 'Les Domaines d\'étude'),
             ),
             SizedBox(height: smallSpacer),
-            // Le widget FutureBuilder pour afficher les domaines
             FutureBuilder<List<Domain>>(
               future: _domainsFuture,
               builder: (context, snapshot) {
@@ -108,10 +110,9 @@ class _HomePageState extends State<HomePage> {
                               const EdgeInsets.only(right: 10.0, bottom: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              // Logique pour gérer le clic sur le domaine
                               navigateToDomainOffers(domain.name);
                             },
-                            child: CustomDomainesButton(
+                            child: CustomDomainCard(
                               domain: domain,
                               title: domain.name,
                               onTap: () {
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding:
                   const EdgeInsets.only(left: appPadding, right: appPadding),
-              child: CustomTitle(title: 'Les Offres Recentes'),
+              child: CustomTitle(title: 'Les Offres Récentes'),
             ),
             SizedBox(height: smallSpacer),
             FutureBuilder<List<Offer>>(
@@ -192,6 +193,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void navigateToApplyPage(Offer offer) async {
+    User? user = await AuthService().getUserDetails();
+
     bool isLoggedIn = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -203,7 +206,10 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ApplyPage(offer: offer),
+          builder: (context) => ApplyPage(
+            offer: offer,
+            user: user,
+          ),
         ),
       );
     }

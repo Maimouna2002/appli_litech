@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:stageapp/models/auth_model.dart';
+import 'package:stageapp/models/offer_model.dart';
+import 'package:stageapp/services/application_service.dart';
 import 'package:stageapp/theme/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../models/offer_model.dart';
+import 'package:stageapp/theme/padding.dart';
+
+import '../widgets/custom_button_box.dart';
+import '../widgets/custom_input_files.dart';
 
 class ApplyPage extends StatefulWidget {
   final Offer offer;
+  final User user;
 
-  ApplyPage({required this.offer});
+  ApplyPage({required this.offer, required this.user});
 
   @override
   _ApplyPageState createState() => _ApplyPageState();
 }
 
 class _ApplyPageState extends State<ApplyPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _cvController = TextEditingController();
-  TextEditingController _motivationController = TextEditingController();
+  late TextEditingController _cvController;
+  late TextEditingController _motivationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _cvController = TextEditingController();
+    _motivationController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -24,157 +36,87 @@ class _ApplyPageState extends State<ApplyPage> {
     super.dispose();
   }
 
+  Future<void> _submitApplication() async {
+    String cv = _cvController.text;
+    String motivationLetter = _motivationController.text;
+
+    // Call the application service to submit the application
+    try {
+      await ApplicationService().submitApplication(
+        offerId: widget.offer.id,
+        userId: widget.user.id,
+        cv: cv,
+        motivationLetter: motivationLetter,
+      );
+      // Application submitted successfully
+      // You can show a success message or navigate to another page
+    } catch (error) {
+      // Error occurred while submitting the application
+      // You can show an error message or handle the error in a desired way
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Postuler'),
-        backgroundColor: AppColors.primary,
+        title: Text('Apply for ${widget.offer.title}'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(appPadding),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 8.0),
+            SizedBox(height: 24.0),
             Text(
-              'Postuler à l\'offre :',
+              'Application Details',
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: AppColors.secondary,
-              ),
-            ),
-            Text(
-              widget.offer.description,
-              style: TextStyle(
-                fontSize: 14.0,
-                color: AppColors.secondary,
               ),
             ),
             SizedBox(height: 16.0),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _cvController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'CV',
-                            border: OutlineInputBorder(),
-                            labelStyle: TextStyle(color: AppColors.secondary),
-                            prefixIcon: Icon(
-                              Icons.file_copy,
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez sélectionner votre CV';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      TextButton.icon(
-                        onPressed: () {
-                          _launchURL(_cvController.text);
-                        },
-                        icon: Icon(
-                          Icons.download,
-                          color: AppColors.primary,
-                        ),
-                        label: Text(
-                          'Télécharger',
-                          style: TextStyle(color: AppColors.primary),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _motivationController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Lettre de motivation',
-                            border: OutlineInputBorder(),
-                            labelStyle: TextStyle(color: AppColors.secondary),
-                            prefixIcon: Icon(
-                              Icons.mail,
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer votre lettre de motivation';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      TextButton.icon(
-                        onPressed: () {
-                          _launchURL(_motivationController.text);
-                        },
-                        icon: Icon(
-                          Icons.download,
-                          color: AppColors.primary,
-                        ),
-                        label: Text(
-                          'Télécharger',
-                          style: TextStyle(color: AppColors.primary),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Logique pour soumettre la candidature
-                        _submitApplication();
-                      }
-                    },
-                    child: Text(
-                      'Soumettre',
-                      style: TextStyle(
-                        color: AppColors.textWhite,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: AppColors.primary,
-                    ),
-                  ),
-                ],
+            Text(
+              'Offer: ${widget.offer.title}',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'User: ${widget.user.name}',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 24.0),
+            Text(
+              'Application Form',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+            SizedBox(height: 16.0),
+            CustomInputField(
+              controller: _cvController,
+              labelText: 'CV',
+              hintText: 'Upload your CV',
+            ),
+            SizedBox(height: 16.0),
+            CustomInputField(
+              controller: _motivationController,
+              labelText: 'Motivation Letter',
+              hintText: 'Write your motivation letter',
+              maxLines: 5,
+            ),
+            SizedBox(height: 24.0),
+            CustomButtonBox(
+              text: 'Submit Application',
+              onPressed: _submitApplication,
+              backgroundColor: AppColors.primary,
+              textColor: Colors.white,
+              borderRadius: null,
             ),
           ],
         ),
       ),
     );
-  }
-
-  void _submitApplication() {
-    // Logique pour soumettre la candidature
-    // Récupérer les valeurs du formulaire (_cvController.text, _motivationController.text)
-    // Effectuer l'envoi de la candidature
-  }
-
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      // Gérer le cas où le lien ne peut pas être ouvert
-    }
   }
 }

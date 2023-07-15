@@ -1,12 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import '../models/auth_model.dart';
 import '../models/offer_model.dart';
 import '../services/offer_service.dart';
 import '../widgets/custom_app_bar.dart';
-import '../widgets/custom_offer_card.dart';
+import '../widgets/custom_offer_card';
 import 'offer_details_page.dart';
 import 'apply_page.dart';
-import 'login_page.dart';
+import 'login_page';
 
 class OffersPage extends StatefulWidget {
   @override
@@ -49,6 +50,7 @@ class _OffersPageState extends State<OffersPage> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Offres de stage',
+        showBackButton: true, // Afficher le bouton de retour en arrière
       ),
       body: ListView.builder(
         itemCount: offers.length,
@@ -61,7 +63,7 @@ class _OffersPageState extends State<OffersPage> {
               onApply: () {
                 // Logique pour postuler à l'offre
                 if (isAuthenticated) {
-                  navigateToApplyPage(offer);
+                  navigateToApplyPage(offer, user);
                 } else {
                   navigateToLoginPage();
                 }
@@ -86,11 +88,14 @@ class _OffersPageState extends State<OffersPage> {
     );
   }
 
-  void navigateToApplyPage(Offer offer) {
+  void navigateToApplyPage(Offer offer, User user) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ApplyPage(offer: offer),
+        builder: (context) => ApplyPage(
+          offer: offer,
+          user: user,
+        ),
       ),
     );
   }

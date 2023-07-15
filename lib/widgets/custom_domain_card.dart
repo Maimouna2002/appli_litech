@@ -1,51 +1,45 @@
 import 'package:flutter/material.dart';
-import '../models/offer_model.dart';
+import 'package:stageapp/models/offer_model.dart';
+
 import '../theme/colors.dart';
 
-class CustomDomainesButton extends StatelessWidget {
+class CustomDomainCard extends StatelessWidget {
   final Domain domain;
-  final Function() onTap;
+  final String title;
+  final VoidCallback onTap;
 
-  const CustomDomainesButton({
+  const CustomDomainCard({
     required this.domain,
+    required this.title,
     required this.onTap,
-    required String title,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-            top: 10.0,
-            bottom: 10.0,
-          ),
+    return Card(
+      elevation: 2.0,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(100.0),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.accentError.withOpacity(0.5),
-                spreadRadius: 0.0,
-                blurRadius: 6.0,
-                offset: Offset(0, 2),
-              )
-            ],
+            borderRadius: BorderRadius.circular(8.0),
+            color: AppColors.primary,
           ),
           child: Text(
-            domain.name,
+            title,
             style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
               color: AppColors.textWhite,
-              fontSize: 15.0,
-              fontWeight: FontWeight.w700,
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

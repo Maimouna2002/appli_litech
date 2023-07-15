@@ -1,121 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:stageapp/services/auth_service.dart';
-import '../widgets/custom_app_bar.dart';
-import '../widgets/custom_place_holder.dart';
-import '../widgets/custom_button_box.dart';
-import '../theme/colors.dart';
-import '../theme/padding.dart';
-import '../widgets/custom_textfield.dart';
 
-class RegisterPage extends StatefulWidget {
-  @override
-  _RegisterPageState createState() => _RegisterPageState();
-}
+import '../services/k';
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPage extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  final AuthService _authService = AuthService();
+  void _register() {
+    final String name = _nameController.text;
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+    final String c_Password = _confirmPasswordController.text;
 
-  bool _isLoading = false;
-
-  void _register() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    final success = await _authService.register(name, email, password);
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (success) {
-      // Naviguer vers la page de connexion après une inscription réussie
-      Navigator.pushReplacementNamed(context, '/login');
-    } else {
-      // Afficher une erreur d'inscription
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Erreur d\'inscription'),
-          content: Text('Veuillez vérifier vos informations d\'inscription.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            ),
-          ],
-        ),
-      );
-    }
+    // Appeler votre gestionnaire d'authentification pour effectuer l'inscription
+    AuthService.register(name, email, password, c_Password);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Offres de stage',
+      appBar: AppBar(
+        title: Text('Inscription'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(appPadding),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomTextField(
+            TextFormField(
               controller: _nameController,
-              labelText: 'Nom',
-              prefixIcon: Icons.person,
-              keyboardType: TextInputType.text,
+              decoration: InputDecoration(labelText: 'Nom'),
             ),
-            SizedBox(height: 16.0),
-            CustomTextField(
+            TextFormField(
               controller: _emailController,
-              labelText: 'Email',
-              prefixIcon: Icons.email,
-              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 16.0),
-            CustomTextField(
+            TextFormField(
               controller: _passwordController,
-              labelText: 'Mot de passe',
+              decoration: InputDecoration(labelText: 'Mot de passe'),
               obscureText: true,
-              prefixIcon: Icons.lock,
-              keyboardType: TextInputType.text,
             ),
-            SizedBox(height: 32.0),
-            _isLoading
-                ? CircularProgressIndicator()
-                : CustomButtonBox(
-                    title: 'Inscription',
-                    onPressed: _register,
-                    color: AppColors.primary.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(17.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
-                        spreadRadius: 0.0,
-                        blurRadius: 6.0,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+            TextFormField(
+              controller: _confirmPasswordController,
+              decoration:
+                  InputDecoration(labelText: 'Confirmer le mot de passe'),
+              obscureText: true,
+            ),
             SizedBox(height: 16.0),
-            CustomPlaceHolder(
-              title: 'Se connecter',
-              isSwitch: false,
-              onTap: () {
-                // Naviguer vers la page de connexion
-                Navigator.pushReplacementNamed(context, '/login');
-              },
+            ElevatedButton(
+              onPressed: _register,
+              child: Text('S\'inscrire'),
             ),
           ],
         ),

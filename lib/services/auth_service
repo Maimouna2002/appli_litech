@@ -1,0 +1,100 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../models/auth_model.dart';
+
+class AuthService {
+  class AuthService {
+  // ...
+
+  Future<String> register(String name, String email, String password) async {
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/register'),
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'c_password': password,
+      },
+    );
+
+    if (response.statusCode == 201) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData['message'] != null) {
+        return jsonData['message'];
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else {
+      throw Exception('Failed to register: ${response.statusCode}');
+    }
+  }
+
+  // ...
+}
+
+  Future<String> login(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/login'),
+      body: {
+        'email': email,
+        'password': password,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData['access_token'] != null) {
+        return jsonData['access_token'];
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized');
+    } else {
+      throw Exception('Failed to login: ${response.statusCode}');
+    }
+  }
+
+  Future<User> getUserDetails(String token) async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/user'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      if (jsonData is Map<String, dynamic>) {
+        return User.fromJson(jsonData);
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized');
+    } else {
+      throw Exception('Failed to fetch user details: ${response.statusCode}');
+    }
+  }
+
+  Future<void> logout(String token) async {
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/logout'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized');
+    } else {
+      throw Exception('Failed to logout: ${response.statusCode}');
+    }
+  }
+}
