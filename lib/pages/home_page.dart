@@ -193,8 +193,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void navigateToApplyPage(Offer offer) async {
-    User? user = await AuthService().getUserDetails();
-
     bool isLoggedIn = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -208,7 +206,6 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(
           builder: (context) => ApplyPage(
             offer: offer,
-            user: user,
           ),
         ),
       );

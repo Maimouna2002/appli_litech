@@ -42,12 +42,7 @@ class _ApplyPageState extends State<ApplyPage> {
 
     // Call the application service to submit the application
     try {
-      await ApplicationService().submitApplication(
-        offerId: widget.offer.id,
-        userId: widget.user.id,
-        cv: cv,
-        motivationLetter: motivationLetter,
-      );
+      await ApplicationService().apply();
       // Application submitted successfully
       // You can show a success message or navigate to another page
     } catch (error) {

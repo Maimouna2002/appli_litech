@@ -4,12 +4,11 @@ import 'dart:convert';
 import '../models/auth_model.dart';
 
 class AuthService {
-  class AuthService {
-  // ...
+  static const String baseUrl = 'http://127.0.0.1:8000/api';
 
   Future<String> register(String name, String email, String password) async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/register'),
+      Uri.parse('$baseUrl/register'),
       body: {
         'name': name,
         'email': email,
@@ -31,12 +30,9 @@ class AuthService {
     }
   }
 
-  // ...
-}
-
   Future<String> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/login'),
+      Uri.parse('$baseUrl/login'),
       body: {
         'email': email,
         'password': password,
@@ -60,7 +56,7 @@ class AuthService {
 
   Future<User> getUserDetails(String token) async {
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/user'),
+      Uri.parse('$baseUrl/user'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -83,7 +79,7 @@ class AuthService {
 
   Future<void> logout(String token) async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/logout'),
+      Uri.parse('$baseUrl/logout'),
       headers: {
         'Authorization': 'Bearer $token',
       },
